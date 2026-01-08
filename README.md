@@ -1,4 +1,4 @@
-# 📚 Dashboard Analytics Perpustakaan Unnisula
+# Dashboard Analytics Perpustakaan - Prototype
 
 <div align="center">
 
@@ -9,17 +9,37 @@
 
 **Dashboard analytics modern untuk monitoring perpustakaan dengan visualisasi data lengkap dan sistem rekomendasi.**
 
-*Proyek Magang - Perpustakaan Unnisula*
+*Proyek Magang - Prototype Dashboard Perpustakaan*
 
-[Demo](#demo) • [Fitur](#-fitur-utama) • [Instalasi](#-instalasi) • [Struktur](#-struktur-project) • [Kontribusi](#-kontribusi)
+[Demo](#demo) • [Fitur](#fitur-utama) • [Instalasi](#instalasi) • [Struktur](#struktur-project) • [Kontribusi](#kontribusi)
 
 </div>
 
 ---
 
-## 🎯 Overview
+## Demo
 
-Dashboard Analytics Perpustakaan Unnisula adalah aplikasi web berbasis React yang menyediakan:
+<div align="center">
+
+### Dashboard Utama
+![Dashboard](./public/images/demo_dashboard.png)
+
+### Analisis Pengunjung
+![Visitors](./public/images/demo_visitors.png)
+
+### Analisis Peminjaman
+![Loans](./public/images/demo_loans.png)
+
+### Sistem Rekomendasi
+![Recommendations](./public/images/demo_recommendations.png)
+
+</div>
+
+---
+
+## Overview
+
+Dashboard Analytics Perpustakaan Prototype adalah aplikasi web berbasis React yang menyediakan:
 - Visualisasi data kunjungan dan peminjaman perpustakaan
 - Sistem rekomendasi buku menggunakan algoritma Collaborative Filtering dan Content-Based Filtering
 - Interface modern dengan animasi smooth dan responsive design
@@ -27,33 +47,33 @@ Dashboard Analytics Perpustakaan Unnisula adalah aplikasi web berbasis React yan
 
 ---
 
-## ✨ Fitur Utama
+## Fitur Utama
 
-### 🔐 Authentication
+### Authentication
 - Login page dengan animated gradient wallpaper
 - Floating particles effect
 - Session persistence dengan localStorage
 
-### 📊 Dashboard Overview
+### Dashboard Overview
 - **KPI Cards**: Total buku, pengunjung, peminjaman dengan animasi counting
 - **Trend Chart**: Line chart kunjungan dengan period selector
 - **Category Chart**: Bar chart kategori terpopuler
 - **Date Range Filter**: Filter data berdasarkan rentang waktu
 - **Auto Refresh**: Data update otomatis dengan configurable interval
 
-### 👥 Analisis Kunjungan
+### Analisis Kunjungan
 - **Peak Hours Heatmap**: Jam sibuk dengan gradient colors
 - **Faculty Distribution**: Pie chart distribusi per fakultas
 - **Visitor Table**: Tabel dengan search, sort, dan live duration
 - **Statistics Cards**: Durasi rata-rata, jam tersibuk, total bulanan
 
-### 📖 Analisis Peminjaman
+### Analisis Peminjaman
 - **Top 10 Books Grid**: Buku terpopuler dengan ranking badges
 - **Category Bar Chart**: Kategori horizontal bar chart
 - **Loan Trend Chart**: Area chart trend 6 bulan
 - **Late Returns Stats**: Progress bar keterlambatan
 
-### 🎯 Sistem Rekomendasi
+### Sistem Rekomendasi
 - **Trending Books**: Top 10 minggu ini dengan ranked list
 - **Collaborative Filtering**: "Yang pinjam ini juga pinjam..."
 - **Content-Based**: Rekomendasi berdasarkan kategori favorit
@@ -61,7 +81,7 @@ Dashboard Analytics Perpustakaan Unnisula adalah aplikasi web berbasis React yan
 
 ---
 
-## 🚀 Instalasi
+## Instalasi
 
 ### Prerequisites
 - Node.js 16+ 
@@ -71,10 +91,10 @@ Dashboard Analytics Perpustakaan Unnisula adalah aplikasi web berbasis React yan
 
 ```bash
 # Clone repository
-git clone https://github.com/alvahraa/perpustakaan-dashboard.git
+git clone https://github.com/alvahraa/prototype-dashboard.git
 
 # Masuk ke direktori project
-cd perpustakaan-dashboard
+cd prototype-dashboard
 
 # Install dependencies
 npm install
@@ -102,10 +122,10 @@ cp .env.example .env.local
 
 ---
 
-## 📁 Struktur Project
+## Struktur Project
 
 ```
-perpustakaan-dashboard/
+prototype-dashboard/
 ├── public/
 │   ├── images/              # Folder untuk upload gambar
 │   ├── index.html
@@ -160,7 +180,7 @@ perpustakaan-dashboard/
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Technology | Purpose |
 |------------|---------|
@@ -172,7 +192,7 @@ perpustakaan-dashboard/
 
 ---
 
-## 🧮 Algoritma Rekomendasi
+## Algoritma Rekomendasi
 
 ### 1. Trending Books
 ```javascript
@@ -198,7 +218,7 @@ perpustakaan-dashboard/
 
 ---
 
-## 🎨 Design System
+## Design System
 
 ### Colors
 | Token | Value | Usage |
@@ -215,7 +235,7 @@ perpustakaan-dashboard/
 
 ---
 
-## 📊 Data Dummy
+## Data Dummy
 
 | Entity | Count | Description |
 |--------|-------|-------------|
@@ -225,7 +245,7 @@ perpustakaan-dashboard/
 
 ---
 
-## 🤝 Kontribusi
+## Kontribusi
 
 Kontribusi sangat diterima! Silakan:
 
@@ -237,7 +257,7 @@ Kontribusi sangat diterima! Silakan:
 
 ---
 
-## ⚠️ Troubleshooting
+## Troubleshooting
 
 ### CSS Lint Warnings
 Warning `@tailwind` dan `@apply` di editor adalah **NORMAL**.
@@ -262,16 +282,16 @@ npm install
 
 ---
 
-## 👥 Author
+## Author
 
-- **Alvah Rabbany** - *Proyek Magang Perpustakaan Unnisula*
+- **Alvah Rabbany** - *Proyek Magang - Prototype Dashboard Perpustakaan*
 
 ---
 
 <div align="center">
 
-**Made with ❤️ for better library analytics**
+**Made with love for better library analytics**
 
-⭐ Star this repo if you find it useful!
+Star this repo if you find it useful!
 
 </div>
