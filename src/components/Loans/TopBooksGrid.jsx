@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { Download } from 'lucide-react';
 import { ViewToggle } from '../Common';
+import { exportToExcel } from '../../utils/exportToExcel';
 
 /**
  * TopBooksGrid Component
  * 
- * Dual view: Visual Grid (default) and Data Table (admin)
+ * Dual view with contextual export button
  */
 
 // Animation for grid items
@@ -24,6 +26,19 @@ const itemVariants = {
 
 function TopBooksGrid({ books, loading = false, title = "Top 10 Buku Terpopuler" }) {
   const [viewMode, setViewMode] = useState('grid');
+
+  const handleExport = () => {
+    const data = books.map((book, idx) => ({
+      'Rank': idx + 1,
+      'ID': book.id,
+      'Judul': book.title,
+      'Penulis': book.author,
+      'Kategori': book.category || 'Umum',
+      'Total Pinjam': book.totalLoans,
+      'ISBN': book.isbn || '-',
+    }));
+    exportToExcel(data, 'Top_Books_Report', 'Top Books');
+  };
 
   if (loading) {
     return (
@@ -44,10 +59,19 @@ function TopBooksGrid({ books, loading = false, title = "Top 10 Buku Terpopuler"
 
   return (
     <div className="card">
-      {/* Header with View Toggle */}
+      {/* Header with Controls */}
       <div className="flex items-center justify-between mb-6">
         <h3 className="card-header mb-0">{title}</h3>
-        <ViewToggle viewMode={viewMode} onViewChange={setViewMode} />
+        <div className="flex items-center gap-2">
+          <button 
+            onClick={handleExport}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+          >
+            <Download className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Download</span>
+          </button>
+          <ViewToggle viewMode={viewMode} onViewChange={setViewMode} />
+        </div>
       </div>
 
       {/* Visual Grid View */}

@@ -8,10 +8,8 @@ import {
   RefreshButton, 
   DateRangePicker, 
   LastUpdated,
-  Tabs,
-  ExportButton 
+  Tabs 
 } from '../components/Common';
-import { exportToExcel, formatLoanData } from '../utils/exportToExcel';
 import { useLoans, useBooks } from '../hooks';
 import * as analytics from '../utils/analytics';
 
@@ -117,21 +115,10 @@ function LoansPage() {
           />
           {lastUpdated && <LastUpdated timestamp={lastUpdated} />}
         </div>
-        <div className="flex items-center gap-2">
-          <ExportButton 
-            label="Export Excel"
-            onExport={() => {
-              if (loans) {
-                const formatted = formatLoanData(loans);
-                exportToExcel(formatted, 'Loan_Report', 'Loans');
-              }
-            }}
-          />
-          <RefreshButton 
-            onClick={handleRefresh}
-            loading={loading}
-          />
-        </div>
+        <RefreshButton 
+          onClick={handleRefresh}
+          loading={loading}
+        />
       </div>
 
       {/* Error banner */}
