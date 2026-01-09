@@ -7,3 +7,4 @@ export { Tabs, TabPanel } from './Tabs';
 export { ViewToggle } from './ViewToggle';
 export { default as CommandPalette } from './CommandPalette';
 export { default as ControlBar } from './ControlBar';
+export { default as ExportButton } from './ExportButton';

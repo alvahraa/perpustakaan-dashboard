@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
 import { 
   Search, 
   LayoutDashboard, 
@@ -21,7 +20,6 @@ import {
  * - Opens with Ctrl+K / Cmd+K
  * - Navigate to pages
  * - Quick actions
- * - Search simulation
  */
 
 // Navigation items
@@ -69,7 +67,6 @@ function CommandPalette() {
   const [search, setSearch] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef(null);
-  const navigate = useNavigate();
 
   // Filter items based on search
   const filteredItems = allItems.filter(item => 
@@ -126,10 +123,10 @@ function CommandPalette() {
   // Handle item selection
   const handleSelect = (item) => {
     if (item.path) {
-      navigate(item.path);
+      // Use window.location for navigation (no react-router-dom needed)
+      window.location.hash = item.path;
     } else if (item.action) {
       console.log(`Action triggered: ${item.action}`);
-      // Toast notification simulation
       alert(`Action: ${item.label}`);
     }
     setIsOpen(false);
@@ -137,7 +134,7 @@ function CommandPalette() {
 
   return (
     <>
-      {/* Trigger Button (for Navbar) */}
+      {/* Trigger Button */}
       <button
         onClick={() => setIsOpen(true)}
         className="flex items-center gap-2 px-3 py-2 text-sm text-gray-500 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
@@ -201,7 +198,7 @@ function CommandPalette() {
                     <div className="px-4 py-1.5 text-xs font-semibold text-gray-400 uppercase tracking-wider">
                       {section}
                     </div>
-                    {items.map((item, idx) => {
+                    {items.map((item) => {
                       const globalIndex = filteredItems.indexOf(item);
                       const isSelected = globalIndex === selectedIndex;
                       

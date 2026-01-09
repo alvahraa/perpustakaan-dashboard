@@ -14,7 +14,9 @@ import {
   DateRangePicker, 
   LastUpdated,
   Tabs,
+  ExportButton,
 } from '../components/Common';
+import { exportToExcel, formatVisitorData } from '../utils/exportToExcel';
 import { useVisitors } from '../hooks';
 import * as analytics from '../utils/analytics';
 
@@ -110,10 +112,21 @@ function VisitorsPage() {
           />
           {lastUpdated && <LastUpdated timestamp={lastUpdated} />}
         </div>
-        <RefreshButton 
-          onClick={handleRefresh}
-          loading={loading}
-        />
+        <div className="flex items-center gap-2">
+          <ExportButton 
+            label="Export Excel"
+            onExport={() => {
+              if (visitors) {
+                const formatted = formatVisitorData(visitors);
+                exportToExcel(formatted, 'Visitor_Report', 'Visitors');
+              }
+            }}
+          />
+          <RefreshButton 
+            onClick={handleRefresh}
+            loading={loading}
+          />
+        </div>
       </div>
 
       {/* Error banner */}
