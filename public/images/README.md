@@ -20,7 +20,7 @@ Place your images here and reference them in components:
 ## Naming Convention
 
 Use kebab-case for image names:
-- ✅ `library-logo.png`
-- ✅ `book-cover-001.jpg`
-- ❌ `Library Logo.png`
-- ❌ `bookCover001.jpg`
+-  `library-logo.png`
+-  `book-cover-001.jpg`
+-  `Library Logo.png`
+-  `bookCover001.jpg`

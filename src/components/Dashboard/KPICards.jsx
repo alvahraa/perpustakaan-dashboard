@@ -1,14 +1,11 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Users, BookOpen, UserCheck, TrendingUp } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Users, BookOpen, UserCheck, TrendingUp, ArrowUp, ArrowDown } from 'lucide-react';
 
 /**
- * KPICards Component
+ * KPICards Component - Premium Redesign
  * 
- * 4 KPI Cards dengan animasi number counting:
- * - Total Kunjungan Hari Ini
- * - Peminjaman Aktif
- * - Pengunjung Saat Ini (dengan simulasi real-time)
- * - Buku Terpopuler Bulan Ini
+ * 4 KPI Cards with generous spacing, muted colors, and smooth animations
  */
 
 // Hook untuk animasi counting
@@ -27,11 +24,8 @@ function useCountUp(endValue, duration = 1000) {
     const animate = (timestamp) => {
       if (!startTime) startTime = timestamp;
       const progress = Math.min((timestamp - startTime) / duration, 1);
-      
-      // Easing function (ease-out)
       const easeOut = 1 - Math.pow(1 - progress, 3);
       const currentValue = Math.floor(startValue + (endValue - startValue) * easeOut);
-      
       setCount(currentValue);
 
       if (progress < 1) {
@@ -45,33 +39,48 @@ function useCountUp(endValue, duration = 1000) {
   return count;
 }
 
-// Single KPI Card Component
-function KPICard({ icon: Icon, label, value, subLabel, trend, loading }) {
+// Single KPI Card - Premium Style
+function KPICard({ icon: Icon, label, value, subLabel, trend, loading, index }) {
   const animatedValue = useCountUp(loading ? 0 : value, 1200);
 
   return (
-    <div className="card hover:shadow-md transition-shadow duration-200">
+    <motion.div 
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ 
+        type: 'spring', 
+        stiffness: 120, 
+        damping: 20,
+        delay: index * 0.08 
+      }}
+      whileHover={{ y: -3 }}
+      className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300"
+    >
       <div className="flex items-start justify-between">
         <div className="flex-1">
-          {/* Label */}
-          <p className="text-sm text-text-secondary font-medium mb-2">{label}</p>
+          {/* Label - Muted */}
+          <p className="text-sm text-gray-500 font-medium mb-3">{label}</p>
           
-          {/* Value dengan animasi */}
-          <div className="flex items-baseline gap-2">
+          {/* Value */}
+          <div className="flex items-baseline gap-3">
             {loading ? (
-              <div className="h-12 w-24 bg-gray-200 rounded animate-pulse"></div>
+              <div className="h-10 w-20 bg-gray-100 rounded-lg animate-pulse"></div>
             ) : (
-              <span className="text-4xl font-bold text-black animate-count-up">
+              <span className="text-3xl font-bold text-gray-900 tracking-tight">
                 {animatedValue.toLocaleString('id-ID')}
               </span>
             )}
             
-            {/* Trend indicator */}
-            {trend && !loading && (
-              <span className={`text-sm font-medium flex items-center gap-1 ${
-                trend > 0 ? 'text-green-600' : trend < 0 ? 'text-red-600' : 'text-gray-500'
+            {/* Trend indicator - Subtle */}
+            {trend !== null && !loading && (
+              <span className={`text-xs font-medium flex items-center gap-0.5 px-2 py-1 rounded-full ${
+                trend > 0 
+                  ? 'text-emerald-600 bg-emerald-50' 
+                  : trend < 0 
+                  ? 'text-rose-600 bg-rose-50' 
+                  : 'text-gray-500 bg-gray-100'
               }`}>
-                <TrendingUp className={`w-3 h-3 ${trend < 0 ? 'rotate-180' : ''}`} />
+                {trend > 0 ? <ArrowUp className="w-3 h-3" /> : <ArrowDown className="w-3 h-3" />}
                 {Math.abs(trend)}%
               </span>
             )}
@@ -79,31 +88,29 @@ function KPICard({ icon: Icon, label, value, subLabel, trend, loading }) {
 
           {/* Sub label */}
           {subLabel && (
-            <p className="text-xs text-text-secondary mt-1">{subLabel}</p>
+            <p className="text-xs text-gray-400 mt-2">{subLabel}</p>
           )}
         </div>
 
-        {/* Icon */}
-        <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-          <Icon className="w-6 h-6 text-black" />
+        {/* Icon - Subtle background */}
+        <div className="w-11 h-11 bg-gray-50 rounded-xl flex items-center justify-center">
+          <Icon className="w-5 h-5 text-gray-600" />
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
 function KPICards({ summary, loading = false }) {
-  // Simulasi real-time untuk pengunjung saat ini
   const [currentInside, setCurrentInside] = useState(summary?.currentlyInside || 0);
 
   useEffect(() => {
     if (!summary) return;
     setCurrentInside(summary.currentlyInside);
 
-    // Simulasi perubahan real-time setiap 5 detik
     const interval = setInterval(() => {
       setCurrentInside(prev => {
-        const change = Math.floor(Math.random() * 3) - 1; // -1, 0, atau 1
+        const change = Math.floor(Math.random() * 3) - 1;
         return Math.max(0, prev + change);
       });
     }, 5000);
@@ -118,7 +125,7 @@ function KPICards({ summary, loading = false }) {
       label: 'Kunjungan Hari Ini',
       value: summary?.totalVisitorsToday || 0,
       subLabel: 'pengunjung',
-      trend: 12, // Dummy trend
+      trend: 12,
     },
     {
       id: 'active-loans',
@@ -134,7 +141,7 @@ function KPICards({ summary, loading = false }) {
       label: 'Pengunjung Saat Ini',
       value: currentInside,
       subLabel: 'sedang di perpustakaan',
-      trend: null, // No trend for real-time
+      trend: null,
     },
     {
       id: 'total-books',
@@ -147,8 +154,8 @@ function KPICards({ summary, loading = false }) {
   ], [summary, currentInside]);
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-      {kpis.map((kpi) => (
+    <div className="bento-grid-4">
+      {kpis.map((kpi, index) => (
         <KPICard
           key={kpi.id}
           icon={kpi.icon}
@@ -157,6 +164,7 @@ function KPICards({ summary, loading = false }) {
           subLabel={kpi.subLabel}
           trend={kpi.trend}
           loading={loading}
+          index={index}
         />
       ))}
     </div>
