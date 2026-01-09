@@ -91,6 +91,109 @@ clsx           - Conditional class names
 tailwind-merge - Merge Tailwind classes
 ```
 
+### 6. System Console (Terminal Emulator)
+
+Dashboard dilengkapi dengan **System Console** - terminal emulator yang mensimulasikan Unix shell untuk administrasi sistem.
+
+**Lokasi:** Sidebar > System > System Console
+
+**Tampilan:**
+- Full-screen black background dengan green monospace text
+- Status bar: CONNECTION: SECURE, STATUS: ACTIVE, UPTIME
+- Blinking cursor dan command history (up/down arrows)
+
+**Commands yang tersedia:**
+
+| Command | Fungsi |
+|---------|--------|
+| `help` | Menampilkan daftar command yang tersedia |
+| `clear` | Membersihkan layar terminal |
+| `whoami` | Menampilkan user aktif (admin privileged access) |
+| `status` | Menampilkan status sistem (uptime, connection, database) |
+| `select * from visitors` | Query data pengunjung (JSON format, 5 rows) |
+| `select * from books` | Query data buku (JSON format, 5 rows) |
+| `run diagnostics` | Menjalankan simulasi diagnostic check multi-step |
+
+**Kegunaan:**
+- Simulasi administrasi sistem untuk demo
+- Quick data query tanpa GUI
+- System status monitoring
+- Training environment untuk staff IT
+
+### 7. Smart Insights (AI Decision Engine)
+
+Komponen **Smart Insights** menganalisis data secara otomatis dan memberikan rekomendasi aksi.
+
+**Lokasi:** Dashboard Page (setelah KPI Cards)
+
+**Insight yang dideteksi:**
+
+| Kondisi | Alert | Aksi |
+|---------|-------|------|
+| `lateLoans > 5` | High Delinquency Detected | Run Protocol (send reminders) |
+| `visitors > avg * 1.2` | Traffic Spike Detected | Activate Protocol |
+| `book.stock === 0` | Stockout Alert | Request Restock |
+
+**Fitur:**
+- Dynamic insight generation berdasarkan real data
+- Terminal-style toast notification saat execute action
+- Monospace insight ID untuk tracking
+- No emojis - strictly professional icons
+
+### 8. Command Palette (Spotlight Search)
+
+**Trigger:** `Ctrl + K` atau klik Search di header
+
+**Fitur:**
+- Quick navigation ke semua halaman
+- Quick actions (Add Visitor, Register Loan, Toggle Dark Mode)
+- Fuzzy search
+- Keyboard navigation (Arrow Up/Down, Enter, Esc)
+- Glassmorphism modal dengan backdrop blur
+
+**Kegunaan:**
+- Power user keyboard shortcuts
+- Fast navigation tanpa klik menu
+- Quick action execution
+
+### 9. Smart Export System (Excel)
+
+Sistem export data ke format Excel (.xlsx) profesional.
+
+**Lokasi Export Button:**
+
+| Widget | Data yang di-export |
+|--------|---------------------|
+| Visitor Table | Data pengunjung yang terfilter (nama, NIM, fakultas, jam) |
+| Top Books Grid | Top 10 buku (rank, judul, penulis, kategori, total pinjam) |
+| Loan History | Riwayat peminjaman (ID, buku, peminjam, tanggal, status) |
+
+**Fitur:**
+- Auto-sized columns
+- Timestamped filename (e.g., `Visitor_Log_20260109_143022.xlsx`)
+- Export filtered data only (apa yang terlihat di tabel)
+- Professional formatting
+
+**Dependencies:**
+```
+xlsx       - Excel file generation
+file-saver - Browser download handling
+```
+
+### 10. View Mode Toggle (Grid/Table)
+
+Toggle untuk beralih antara tampilan visual dan data-dense.
+
+**Lokasi:** Top Books, Trending Books
+
+**Mode:**
+- **Grid View**: Card-based dengan cover images (untuk browsing)
+- **Table View**: Compact table dengan full data (untuk admin)
+
+**Kegunaan:**
+- Executive view (Grid) untuk overview visual
+- Operator view (Table) untuk data entry dan management
+
 ---
 
 ## Mekanisme dan Algoritma
