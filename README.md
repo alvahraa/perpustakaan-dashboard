@@ -115,22 +115,190 @@ Console tersembunyi untuk administrasi sistem, diakses dengan `Ctrl + Shift + X`
 
 ## Mekanisme dan Logic
 
-### 1. Arsitektur Data Flow
+### 1. Arsitektur Sistem Lengkap
+
+Diagram berikut menunjukkan alur data dari source systems (SLiMS dan Gate System) sampai ke visualisasi dashboard:
 
 ```
-[Data Sources]
-      |
-      v
-[Service Layer] --> API fetching, error handling
-      |
-      v
-[React Hooks] --> State management, caching
-      |
-      v
-[Analytics Functions] --> Data processing
-      |
-      v
-[UI Components] --> Visualization
++------------------+     +------------------+
+|   GATE SYSTEM    |     |     SLiMS        |
+| (MySQL Database) |     | (MySQL Database) |
++--------+---------+     +--------+---------+
+         |                        |
+         | visitor_log            | biblio, loan, member
+         |                        |
+         +----------+  +----------+
+                    |  |
+                    v  v
+         +---------------------+
+         |    REST API Layer   |
+         | (Node.js / Laravel) |
+         +----------+----------+
+                    |
+                    | JSON Response
+                    v
++-----------------------------------------------+
+|            REACT FRONTEND                     |
+|                                               |
+|  +----------------+    +------------------+   |
+|  | Service Layer  |    | Data Generator   |   |
+|  | (api.js)       |    | (Dummy Mode)     |   |
+|  +-------+--------+    +--------+---------+   |
+|          |                      |             |
+|          +----------+-----------+             |
+|                     |                         |
+|                     v                         |
+|          +-------------------+                |
+|          |   React Hooks     |                |
+|          | useVisitors()     |                |
+|          | useLoans()        |                |
+|          | useBooks()        |                |
+|          +--------+----------+                |
+|                   |                           |
+|                   v                           |
+|          +-------------------+                |
+|          | Analytics Layer   |                |
+|          | analytics.js      |                |
+|          | - getPeakHours()  |                |
+|          | - getTopBooks()   |                |
+|          | - getTrend()      |                |
+|          +--------+----------+                |
+|                   |                           |
+|                   v                           |
+|          +-------------------+                |
+|          | UI Components     |                |
+|          | - Recharts        |                |
+|          | - Framer Motion   |                |
+|          | - Tailwind CSS    |                |
+|          +-------------------+                |
++-----------------------------------------------+
+```
+
+### 2. Detail Alur Data
+
+#### A. Dari Gate System ke Dashboard
+
+```
+Gate System Database (MySQL)
+    |
+    | Table: visitor_log
+    | Fields: id, nim, name, faculty, entry_time, exit_time
+    |
+    v
+REST API Endpoint
+    |
+    | GET /api/visitors?start=2026-01-01&end=2026-01-11
+    | Response: JSON array of visitor objects
+    |
+    v
+visitorService.js
+    |
+    | getVisitors(dateRange)
+    | - Fetch dari API
+    | - Handle errors
+    | - Transform data
+    |
+    v
+useVisitors() Hook
+    |
+    | - State management
+    | - Loading state
+    | - Auto-refresh interval
+    |
+    v
+Analytics Functions
+    |
+    | calculatePeakHours(visitors)
+    | --> Output: [{hour: "08:00", visits: 45, isPeak: true}]
+    |
+    | getFacultyDistribution(visitors)
+    | --> Output: [{name: "Teknik", count: 234, percentage: 28.5}]
+    |
+    | calculateAverageDuration(visitors)
+    | --> Output: {average: 95, formattedAverage: "1 jam 35 menit"}
+    |
+    v
+UI Components
+    |
+    | PeakHoursHeatmap.jsx --> Bar chart jam sibuk
+    | FacultyPieChart.jsx --> Pie chart distribusi fakultas
+    | VisitorTable.jsx --> Tabel data dengan search/filter
+```
+
+#### B. Dari SLiMS ke Dashboard
+
+```
+SLiMS Database (MySQL)
+    |
+    | Table: biblio (buku)
+    | Fields: biblio_id, title, author, publisher, isbn
+    |
+    | Table: loan (peminjaman)
+    | Fields: loan_id, item_code, member_id, loan_date, due_date, return_date
+    |
+    | Table: member (anggota)
+    | Fields: member_id, member_name, member_type_id
+    |
+    v
+REST API Endpoints
+    |
+    | GET /api/books --> Daftar buku
+    | GET /api/loans?start=...&end=... --> Data peminjaman
+    |
+    v
+loanService.js + bookService.js
+    |
+    | getLoans(dateRange)
+    | getBooks()
+    |
+    v
+useLoans() + useBooks() Hooks
+    |
+    v
+Analytics Functions
+    |
+    | getTopBooks(loans, books, 10)
+    | --> Output: [{title: "Clean Code", totalLoans: 45}]
+    |
+    | getCategoryPopularity(loans, books)
+    | --> Output: [{category: "Teknologi", count: 234, percentage: 35}]
+    |
+    | analyzeLateReturns(loans)
+    | --> Output: {lateRate: 12.5, avgLateDays: 3.2, totalLate: 45}
+    |
+    | getLoanTrend(loans, 6)
+    | --> Output: [{month: "Jan", count: 234}]
+    |
+    v
+UI Components
+    |
+    | TopBooksGrid.jsx --> Grid visual buku populer
+    | CategoryBarChart.jsx --> Horizontal bar chart kategori
+    | LateReturnStats.jsx --> Stats cards keterlambatan
+    | LoanTrendChart.jsx --> Area chart trend bulanan
+```
+
+### 3. Mode Operasi
+
+Dashboard mendukung dua mode operasi:
+
+| Mode | Sumber Data | Penggunaan |
+|------|-------------|------------|
+| **Dummy** | `generateDummyData.js` | Development dan demo |
+| **Production** | Gate System API + SLiMS API | Live environment |
+
+**Switch mode** dilakukan di `src/services/api.js`:
+
+```javascript
+// Mode: 'dummy' atau 'production'
+const MODE = process.env.REACT_APP_DATA_MODE || 'dummy';
+
+export async function fetchData(endpoint) {
+  if (MODE === 'dummy') {
+    return generateDummyData(endpoint);
+  }
+  return fetch(`${API_BASE_URL}${endpoint}`).then(res => res.json());
+}
 ```
 
 ### 2. Visitor Trend Analysis
