@@ -6,9 +6,9 @@
 ![TailwindCSS](https://img.shields.io/badge/Tailwind-3.x-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
 ![Recharts](https://img.shields.io/badge/Recharts-2.x-FF6384?style=for-the-badge&logo=chart.js&logoColor=white)
 
-**Sistem dashboard analytics modern untuk monitoring perpustakaan dengan visualisasi data dan sistem rekomendasi buku berbasis algoritma.**
+**Sistem dashboard analytics modern untuk monitoring perpustakaan dengan visualisasi data real-time.**
 
-[Fitur](#fitur-utama) • [Mekanisme](#mekanisme-dan-algoritma) • [Instalasi](#instalasi) • [Struktur](#struktur-project)
+[Fitur](#fitur-utama) • [Instalasi](#instalasi) • [Struktur](#struktur-project)
 
 </div>
 
@@ -18,20 +18,6 @@
 > Sistem ini masih berupa **PROTOTYPE** dan menggunakan **data dummy** untuk demonstrasi.  
 > Belum diuji coba dengan database real (Gate System / SLiMS).  
 > Diperlukan integrasi dan pengujian lebih lanjut sebelum digunakan di lingkungan produksi.
-
----
-
-## Demo Screenshots
-
-> **Catatan:** Tambahkan screenshot demo di folder `public/images/demo/`
-
-| Halaman | Screenshot |
-|---------|-----------|
-| Login | ![Login](./public/images/demo/login_page.png) |
-| Dashboard | ![Dashboard](./public/images/demo/dashboard_main.png) |
-| Kunjungan | ![Kunjungan](./public/images/demo/visitors_page.png) |
-| Peminjaman | ![Peminjaman](./public/images/demo/loans_page.png) |
-| Rekomendasi | ![Rekomendasi](./public/images/demo/recommendations_page.png) |
 
 ---
 
@@ -55,12 +41,7 @@
 - **Loan Trend**: Area chart trend peminjaman 6 bulan
 - **Late Returns**: Progress bar statistik keterlambatan
 
-### 4. Sistem Rekomendasi (Algoritma)
-- **Trending Books**: Top 10 buku trending minggu ini (frequency counting)
-- **Collaborative Filtering**: "Yang pinjam ini juga pinjam..." (co-occurrence analysis)
-- **Content-Based Filtering**: Rekomendasi berdasarkan kategori favorit (category matching)
-
-### 5. Motion Design System
+### 4. Motion Design System
 
 Dashboard menggunakan **Framer Motion** untuk animasi profesional dan smooth:
 
@@ -79,28 +60,11 @@ Dashboard menggunakan **Framer Motion** untuk animasi profesional dan smooth:
 - **Glassmorphism Card**: Backdrop blur dengan semi-transparent background
 - **Input Micro-interactions**: Scale up dan glow effect saat focus
 
-#### UI Components
-- **MotionCard**: Card dengan hover lift effect
-- **MotionButton**: Button dengan tactile press feedback (whileTap scale)
-- **MotionContainer**: Staggered children animation
+### 5. System Console (Stealth Mode)
 
-**Packages:**
-```
-framer-motion  - Animation library
-clsx           - Conditional class names
-tailwind-merge - Merge Tailwind classes
-```
+Dashboard dilengkapi dengan **System Console** - terminal emulator untuk administrasi sistem.
 
-### 6. System Console (Terminal Emulator)
-
-Dashboard dilengkapi dengan **System Console** - terminal emulator yang mensimulasikan Unix shell untuk administrasi sistem.
-
-**Lokasi:** Sidebar > System > System Console
-
-**Tampilan:**
-- Full-screen black background dengan green monospace text
-- Status bar: CONNECTION: SECURE, STATUS: ACTIVE, UPTIME
-- Blinking cursor dan command history (up/down arrows)
+**Akses:** Tekan `Ctrl + Shift + X` (tersembunyi dari UI normal)
 
 **Commands yang tersedia:**
 
@@ -113,344 +77,38 @@ Dashboard dilengkapi dengan **System Console** - terminal emulator yang mensimul
 | `select * from visitors` | Query data pengunjung (JSON format, 5 rows) |
 | `select * from books` | Query data buku (JSON format, 5 rows) |
 | `run diagnostics` | Menjalankan simulasi diagnostic check multi-step |
+| `calc <expression>` | Kalkulator matematika |
 
-**Kegunaan:**
-- Simulasi administrasi sistem untuk demo
-- Quick data query tanpa GUI
-- System status monitoring
-- Training environment untuk staff IT
-
-### 7. Smart Insights (AI Decision Engine)
-
-Komponen **Smart Insights** menganalisis data secara otomatis dan memberikan rekomendasi aksi.
-
-**Lokasi:** Dashboard Page (setelah KPI Cards)
-
-**Insight yang dideteksi:**
-
-| Kondisi | Alert | Aksi |
-|---------|-------|------|
-| `lateLoans > 5` | High Delinquency Detected | Run Protocol (send reminders) |
-| `visitors > avg * 1.2` | Traffic Spike Detected | Activate Protocol |
-| `book.stock === 0` | Stockout Alert | Request Restock |
-
-**Fitur:**
-- Dynamic insight generation berdasarkan real data
-- Terminal-style toast notification saat execute action
-- Monospace insight ID untuk tracking
-- No emojis - strictly professional icons
-
-### 8. Command Palette (Spotlight Search)
+### 6. Command Palette (Spotlight Search)
 
 **Trigger:** `Ctrl + K` atau klik Search di header
 
 **Fitur:**
 - Quick navigation ke semua halaman
-- Quick actions (Add Visitor, Register Loan, Toggle Dark Mode)
+- Toggle Dark Mode
+- Use System Theme
 - Fuzzy search
 - Keyboard navigation (Arrow Up/Down, Enter, Esc)
-- Glassmorphism modal dengan backdrop blur
 
-**Kegunaan:**
-- Power user keyboard shortcuts
-- Fast navigation tanpa klik menu
-- Quick action execution
+### 7. Dark Mode (Professional)
 
-### 9. Smart Export System (Excel)
+**Toggle:** Via Command Palette (`Ctrl + K`) → "Switch to Dark Mode"
+
+**Fitur:**
+- **Persistent**: Preferensi disimpan di localStorage
+- **System Sync**: Default mengikuti OS preference
+- **Typography Hierarchy**: Menggunakan off-white (slate-50/200/300) untuk menghindari eye strain
+- **High-End Aesthetic**: Inspired by Linear, Vercel, GitHub Dimmed
+
+### 8. Smart Export System (Excel)
 
 Sistem export data ke format Excel (.xlsx) profesional.
-
-**Lokasi Export Button:**
 
 | Widget | Data yang di-export |
 |--------|---------------------|
 | Visitor Table | Data pengunjung yang terfilter (nama, NIM, fakultas, jam) |
 | Top Books Grid | Top 10 buku (rank, judul, penulis, kategori, total pinjam) |
 | Loan History | Riwayat peminjaman (ID, buku, peminjam, tanggal, status) |
-
-**Fitur:**
-- Auto-sized columns
-- Timestamped filename (e.g., `Visitor_Log_20260109_143022.xlsx`)
-- Export filtered data only (apa yang terlihat di tabel)
-- Professional formatting
-
-**Dependencies:**
-```
-xlsx       - Excel file generation
-file-saver - Browser download handling
-```
-
-### 10. View Mode Toggle (Grid/Table)
-
-Toggle untuk beralih antara tampilan visual dan data-dense.
-
-**Lokasi:** Top Books, Trending Books
-
-**Mode:**
-- **Grid View**: Card-based dengan cover images (untuk browsing)
-- **Table View**: Compact table dengan full data (untuk admin)
-
-**Kegunaan:**
-- Executive view (Grid) untuk overview visual
-- Operator view (Table) untuk data entry dan management
-
----
-
-## Mekanisme dan Algoritma
-
-### 1. Visitor Trend Analysis
-
-**Lokasi:** `src/utils/analytics.js` - fungsi `getVisitorTrend()`
-
-**Mekanisme:**
-```
-Input: Array visitor data, jumlah hari (default: 30)
-Process:
-  1. Filter visitors berdasarkan rentang tanggal
-  2. Group by tanggal (menggunakan date-fns format 'yyyy-MM-dd')
-  3. Count jumlah visitor per hari
-  4. Sort berdasarkan tanggal ascending
-Output: Array [{date, count, dayName}]
-```
-
-**Filter yang digunakan:**
-- Date range filter (startDate - endDate)
-- Grouping menggunakan JavaScript `reduce()`
-
----
-
-### 2. Peak Hours Analysis (Jam Sibuk)
-
-**Lokasi:** `src/utils/analytics.js` - fungsi `getPeakHours()`
-
-**Mekanisme:**
-```
-Input: Array visitor data
-Process:
-  1. Extract jam masuk (entryTime) dari setiap visitor
-  2. Group by jam (7, 8, 9, ..., 21)
-  3. Count jumlah visitor per jam
-  4. Calculate persentase relatif terhadap jam tersibuk
-Output: Array [{hour, count, percentage, label}]
-```
-
-**Logika:**
-- Jam operasional: 07:00 - 21:00 (14 jam)
-- Peak detection: Jam dengan count tertinggi
-- Persentase dihitung: `(count / maxCount) * 100`
-
----
-
-### 3. Faculty Distribution
-
-**Lokasi:** `src/utils/analytics.js` - fungsi `getFacultyDistribution()`
-
-**Mekanisme:**
-```
-Input: Array visitor data
-Process:
-  1. Group visitors by fakultas
-  2. Count per fakultas
-  3. Calculate persentase dari total
-  4. Sort descending by count
-Output: Array [{faculty, count, percentage, color}]
-```
-
-**Color Mapping:**
-- 9 fakultas dengan warna berbeda untuk Pie Chart
-- Menggunakan predefined color palette
-
----
-
-### 4. Category Popularity
-
-**Lokasi:** `src/utils/analytics.js` - fungsi `getCategoryPopularity()`
-
-**Mekanisme:**
-```
-Input: Array loans, Array books
-Process:
-  1. Join loans dengan books berdasarkan bookId
-  2. Group by kategori buku
-  3. Count peminjaman per kategori
-  4. Sort descending by count
-Output: Array [{category, count, percentage}]
-```
-
----
-
-### 5. Top Books Algorithm
-
-**Lokasi:** `src/utils/analytics.js` - fungsi `getTopBooks()`
-
-**Mekanisme:**
-```
-Input: Array loans, Array books, limit (default: 10)
-Process:
-  1. Count peminjaman per bookId menggunakan reduce()
-  2. Join dengan data buku untuk mendapat detail (title, author, category)
-  3. Sort descending by totalLoans
-  4. Slice untuk mendapat top N buku
-Output: Array [{id, title, author, category, totalLoans}]
-```
-
----
-
-### 6. Sistem Rekomendasi
-
-#### A. Trending Books
-
-**Lokasi:** `src/utils/analytics.js` - fungsi `getTrendingBooks()`
-
-**Mekanisme:**
-```
-Input: Array loans, Array books, period (7 hari)
-Process:
-  1. Filter loans dalam period terakhir
-  2. Count peminjaman per buku
-  3. Calculate trend score: count dalam period / count total
-  4. Sort by trend score descending
-Output: Array [{book, trendScore, weeklyCount}]
-```
-
-**Logika Trend Score:**
-- Buku dengan peningkatan peminjaman mendapat score lebih tinggi
-- Formula: `weeklyCount / avgWeeklyCount`
-
----
-
-#### B. Collaborative Filtering
-
-**Lokasi:** `src/utils/analytics.js` - fungsi `getCollaborativeRecommendations()`
-
-**Mekanisme:**
-```
-Input: targetBookId, Array loans
-Process:
-  1. Find semua user yang pernah pinjam targetBook
-  2. Find semua buku lain yang dipinjam user tersebut
-  3. Count frequency peminjaman (co-occurrence)
-  4. Rank by frequency (similarity score)
-  5. Filter out targetBook dari hasil
-Output: Array [{book, similarityScore, coOccurrence}]
-```
-
-**Logika "People who borrowed X also borrowed Y":**
-```javascript
-// Pseudocode
-targetUsers = loans.filter(l => l.bookId === targetBook).map(l => l.userId)
-otherBooks = loans.filter(l => targetUsers.includes(l.userId) && l.bookId !== targetBook)
-recommendations = count(otherBooks.bookId).sortDesc()
-```
-
----
-
-#### C. Content-Based Filtering
-
-**Lokasi:** `src/utils/analytics.js` - fungsi `getContentBasedRecommendations()`
-
-**Mekanisme:**
-```
-Input: userId, Array loans, Array books
-Process:
-  1. Get riwayat peminjaman user
-  2. Extract kategori dari buku yang pernah dipinjam
-  3. Find kategori favorit (most frequent)
-  4. Get buku-buku dari kategori yang sama (yang belum pernah dipinjam)
-  5. Sort by rating dan availability
-Output: Array [{book, matchScore, reason}]
-```
-
-**Category Matching:**
-```javascript
-// Pseudocode
-userBooks = loans.filter(l => l.userId === userId).map(l => l.bookId)
-userCategories = books.filter(b => userBooks.includes(b.id)).map(b => b.category)
-favoriteCategory = mostFrequent(userCategories)
-recommendations = books.filter(b => b.category === favoriteCategory && !userBooks.includes(b.id))
-```
-
----
-
-### 7. Data Filtering System
-
-**Date Range Filter:**
-```javascript
-// Digunakan di semua halaman
-const filtered = data.filter(item => {
-  const itemDate = new Date(item.timestamp);
-  return itemDate >= startDate && itemDate <= endDate;
-});
-```
-
-**Search Filter (Visitor Table):**
-```javascript
-const searched = visitors.filter(v => 
-  v.name.toLowerCase().includes(query) ||
-  v.nim.includes(query) ||
-  v.faculty.toLowerCase().includes(query)
-);
-```
-
-**Status Filter (Loans):**
-```javascript
-// Filter: all | active | returned | late
-const filtered = loans.filter(l => 
-  status === 'all' || l.status === status
-);
-```
-
----
-
-## Data Flow Architecture
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                        Data Sources                          │
-├─────────────────────────────────────────────────────────────┤
-│  [Gate System API]  →  Visitor Data (entry/exit time)       │
-│  [SLiMS API]        →  Books & Loans Data                   │
-│  [Dummy Data]       →  Demo/Development Mode                │
-└────────────────────────────┬────────────────────────────────┘
-                             │
-                             ▼
-┌─────────────────────────────────────────────────────────────┐
-│                     Service Layer                            │
-├─────────────────────────────────────────────────────────────┤
-│  visitorService.js  │  loanService.js  │  bookService.js    │
-│  - getVisitors()    │  - getLoans()    │  - getBooks()      │
-│  - getActiveVisitors│  - getLoanStats()│  - getBookById()   │
-└────────────────────────────┬────────────────────────────────┘
-                             │
-                             ▼
-┌─────────────────────────────────────────────────────────────┐
-│                     React Hooks                              │
-├─────────────────────────────────────────────────────────────┤
-│  useDataFetch()     │  Custom hooks for data management     │
-│  useVisitors()      │  Auto-refresh, loading states         │
-│  useLoans()         │  Error handling                       │
-│  useDashboardData() │  Combined data fetching               │
-└────────────────────────────┬────────────────────────────────┘
-                             │
-                             ▼
-┌─────────────────────────────────────────────────────────────┐
-│                   Analytics Layer                            │
-├─────────────────────────────────────────────────────────────┤
-│  analytics.js (20+ functions)                               │
-│  - getVisitorTrend() - getPeakHours() - getTopBooks()       │
-│  - getCategoryPopularity() - getCollaborativeRec()          │
-│  - getContentBasedRec() - getDashboardSummary()             │
-└────────────────────────────┬────────────────────────────────┘
-                             │
-                             ▼
-┌─────────────────────────────────────────────────────────────┐
-│                     UI Components                            │
-├─────────────────────────────────────────────────────────────┤
-│  Pages: Dashboard, Visitors, Loans, Recommendations         │
-│  Components: Charts, Tables, Cards, Filters                 │
-│  Visualizations: Recharts (Line, Bar, Pie, Area charts)     │
-└─────────────────────────────────────────────────────────────┘
-```
 
 ---
 
@@ -461,8 +119,10 @@ const filtered = loans.filter(l =>
 | **React** | UI Library dengan Hooks | 18.x |
 | **Tailwind CSS** | Utility-first Styling | 3.x |
 | **Recharts** | Data Visualization | 2.x |
+| **Framer Motion** | Animation Library | Latest |
 | **Lucide React** | Modern Icons | Latest |
 | **date-fns** | Date Manipulation | 3.x |
+| **xlsx** | Excel Export | Latest |
 
 ---
 
@@ -500,16 +160,14 @@ prototype-dashboard/
 │   ├── images/
 │   │   ├── demo/          # Screenshot untuk dokumentasi
 │   │   └── assets/        # Logo dan icon
-│   ├── index.html
-│   └── manifest.json
+│   └── index.html
 │
 ├── src/
 │   ├── components/
-│   │   ├── Common/        # Loading, Error, DatePicker, etc.
+│   │   ├── Common/        # Loading, Error, DatePicker, CommandPalette
 │   │   ├── Dashboard/     # KPICards, TrendChart, CategoryChart
 │   │   ├── Layout/        # Sidebar, Header
 │   │   ├── Loans/         # TopBooksGrid, LoanTrendChart
-│   │   ├── Recommendations/# Trending, Collaborative, ContentBased
 │   │   └── Visitors/      # PeakHours, FacultyPie, VisitorTable
 │   │
 │   ├── data/
@@ -522,7 +180,7 @@ prototype-dashboard/
 │   │   ├── DashboardPage.jsx
 │   │   ├── VisitorsPage.jsx
 │   │   ├── LoansPage.jsx
-│   │   ├── RecommendationsPage.jsx
+│   │   ├── ConsolePage.jsx
 │   │   └── LoginPage.jsx
 │   │
 │   ├── services/
@@ -532,14 +190,27 @@ prototype-dashboard/
 │   │   └── bookService.js       # Book CRUD
 │   │
 │   ├── utils/
-│   │   └── analytics.js         # 20+ analytic functions
+│   │   └── analytics.js         # Analytic functions
 │   │
 │   ├── App.js
 │   └── index.css
 │
+├── tailwind.config.js
 ├── package.json
 └── README.md
 ```
+
+---
+
+## Keyboard Shortcuts
+
+| Shortcut | Action |
+|----------|--------|
+| `Ctrl + K` | Open Command Palette |
+| `Ctrl + Shift + X` | Open System Console (Stealth Mode) |
+| `↑ ↓` | Navigate in Command Palette |
+| `Enter` | Select in Command Palette |
+| `Esc` | Close modals |
 
 ---
 
@@ -556,19 +227,9 @@ Default mode adalah `dummy` untuk development dan demo.
 
 ---
 
-## Kontribusi
-
-1. Fork repository
-2. Buat branch fitur (`git checkout -b feature/NamaFitur`)
-3. Commit perubahan (`git commit -m 'Add NamaFitur'`)
-4. Push ke branch (`git push origin feature/NamaFitur`)
-5. Buat Pull Request
-
----
-
 ## Author
 
-**Alvah Rabbany** - *Proyek Prototype Dashboard Analytics*
+**Alvah Rabbany** - *Proyek Magang - Prototype Dashboard Analytics Perpustakaan*
 
 ---
 

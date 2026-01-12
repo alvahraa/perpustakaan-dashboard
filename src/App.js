@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Terminal, Zap } from 'lucide-react';
 import './index.css';
 import { Sidebar, Header } from './components/Layout';
 import { DashboardPage, VisitorsPage, LoansPage, RecommendationsPage, LoginPage, ConsolePage } from './pages';
@@ -13,6 +14,7 @@ import { DataModeIndicator } from './components/Common';
  * - Layout: Sidebar + Header + Content
  * - Navigation: Dashboard, Visitors, Loans, Recommendations
  * - Page transitions with AnimatePresence
+ * - Stealth Console: Ctrl+Shift+X to access hidden System Console
  */
 
 // Page title mapping
@@ -20,7 +22,8 @@ const PAGE_TITLES = {
   dashboard: 'Dashboard',
   visitors: 'Analisis Kunjungan',
   loans: 'Analisis Peminjaman',
-  recommendations: 'Sistem Rekomendasi'
+  recommendations: 'Sistem Rekomendasi',
+  console: 'System Console'
 };
 
 // Storage key for auth
@@ -45,10 +48,55 @@ const pageVariants = {
   }
 };
 
+// Stealth Toast Component
+function StealthToast({ show, onComplete }) {
+  useEffect(() => {
+    if (show) {
+      const timer = setTimeout(onComplete, 1200);
+      return () => clearTimeout(timer);
+    }
+  }, [show, onComplete]);
+
+  return (
+    <AnimatePresence>
+      {show && (
+        <motion.div
+          initial={{ opacity: 0, y: 50, scale: 0.9 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: -20, scale: 0.95 }}
+          transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+          className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[100]"
+        >
+          <div 
+            className="flex items-center gap-3 px-5 py-3 rounded-xl shadow-2xl"
+            style={{
+              background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
+              border: '1px solid rgba(99, 102, 241, 0.3)',
+              boxShadow: '0 0 40px rgba(99, 102, 241, 0.2), 0 25px 50px -12px rgba(0, 0, 0, 0.5)'
+            }}
+          >
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+              className="w-5 h-5 border-2 border-indigo-500/30 border-t-indigo-400 rounded-full"
+            />
+            <div className="flex items-center gap-2">
+              <Terminal className="w-4 h-4 text-indigo-400" />
+              <span className="text-sm font-medium text-slate-200">Initializing Root Access...</span>
+            </div>
+            <Zap className="w-4 h-4 text-amber-400" />
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
 function App() {
   const [activePage, setActivePage] = useState('dashboard');
   const [user, setUser] = useState(null);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const [showStealthToast, setShowStealthToast] = useState(false);
 
   // Check for existing session on mount
   useEffect(() => {
@@ -63,6 +111,32 @@ function App() {
     }
     setIsCheckingAuth(false);
   }, []);
+
+  // God Mode Shortcut: Ctrl+Shift+X
+  const handleGodMode = useCallback(() => {
+    if (user) { // Only if authenticated
+      setShowStealthToast(true);
+    }
+  }, [user]);
+
+  const handleStealthComplete = useCallback(() => {
+    setShowStealthToast(false);
+    setActivePage('console');
+  }, []);
+
+  // Global keyboard listener for God Mode
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      // Ctrl+Shift+X triggers stealth console
+      if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'x') {
+        e.preventDefault();
+        handleGodMode();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [handleGodMode]);
 
   // Handle login
   const handleLogin = (userData) => {
@@ -109,7 +183,7 @@ function App() {
 
   // Show dashboard if authenticated
   return (
-    <div className="flex h-screen bg-gray-50 overflow-hidden">
+    <div className="flex h-screen bg-gray-50 dark:bg-gray-950 overflow-hidden transition-colors">
       {/* Sidebar */}
       <Sidebar 
         activePage={activePage} 
@@ -120,15 +194,18 @@ function App() {
       
       {/* Main Content */}
       <div className="flex-1 flex flex-col ml-64 overflow-hidden">
-        {/* Header */}
-        <Header 
-          title={PAGE_TITLES[activePage]} 
-          activePage={activePage}
-          user={user}
-        />
+        {/* Header - hide for console page */}
+        {activePage !== 'console' && (
+          <Header 
+            title={PAGE_TITLES[activePage]} 
+            activePage={activePage}
+            user={user}
+            onNavigate={setActivePage}
+          />
+        )}
         
         {/* Page Content with Transitions */}
-        <main className="flex-1 overflow-auto p-6">
+        <main className={`flex-1 overflow-auto ${activePage !== 'console' ? 'p-6' : ''}`}>
           <AnimatePresence mode="wait">
             <motion.div
               key={activePage}
@@ -136,6 +213,7 @@ function App() {
               initial="initial"
               animate="enter"
               exit="exit"
+              className={activePage === 'console' ? 'h-full' : ''}
             >
               {renderPage()}
             </motion.div>
@@ -145,6 +223,9 @@ function App() {
 
       {/* Demo Mode Badge */}
       <DataModeIndicator />
+
+      {/* Stealth Toast */}
+      <StealthToast show={showStealthToast} onComplete={handleStealthComplete} />
     </div>
   );
 }

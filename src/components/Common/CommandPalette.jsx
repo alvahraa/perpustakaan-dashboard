@@ -6,11 +6,11 @@ import {
   Users, 
   BookOpen, 
   Sparkles,
-  UserPlus,
-  FileText,
   Moon,
+  Sun,
   X,
-  ArrowRight
+  ArrowRight,
+  Monitor
 } from 'lucide-react';
 
 /**
@@ -19,33 +19,74 @@ import {
  * Features:
  * - Opens with Ctrl+K / Cmd+K
  * - Navigate to pages
- * - Quick actions
+ * - System commands (Dark Mode toggle)
+ * - Persistent dark mode with OS preference detection
  */
 
-// Navigation items
+// ============================================
+// DARK MODE ENGINE
+// ============================================
+const THEME_KEY = 'prototype_theme';
+
+const getSystemPreference = () => {
+  if (typeof window !== 'undefined' && window.matchMedia) {
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  return 'light';
+};
+
+const getStoredTheme = () => {
+  if (typeof localStorage !== 'undefined') {
+    return localStorage.getItem(THEME_KEY);
+  }
+  return null;
+};
+
+const setStoredTheme = (theme) => {
+  localStorage.setItem(THEME_KEY, theme);
+};
+
+const applyTheme = (theme) => {
+  const root = document.documentElement;
+  if (theme === 'dark') {
+    root.classList.add('dark');
+  } else {
+    root.classList.remove('dark');
+  }
+};
+
+// Initialize theme on load
+const initializeTheme = () => {
+  const stored = getStoredTheme();
+  const theme = stored || getSystemPreference();
+  applyTheme(theme);
+  return theme;
+};
+
+// ============================================
+// NAVIGATION & ACTIONS
+// ============================================
 const navItems = [
-  { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, path: '/', section: 'Navigation' },
-  { id: 'visitors', label: 'Kunjungan', icon: Users, path: '/visitors', section: 'Navigation' },
-  { id: 'loans', label: 'Peminjaman', icon: BookOpen, path: '/loans', section: 'Navigation' },
-  { id: 'recommendations', label: 'Rekomendasi', icon: Sparkles, path: '/recommendations', section: 'Navigation' },
+  { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, path: 'dashboard', section: 'Navigation' },
+  { id: 'visitors', label: 'Kunjungan', icon: Users, path: 'visitors', section: 'Navigation' },
+  { id: 'loans', label: 'Peminjaman', icon: BookOpen, path: 'loans', section: 'Navigation' },
+  { id: 'recommendations', label: 'Rekomendasi', icon: Sparkles, path: 'recommendations', section: 'Navigation' },
 ];
 
-// Quick actions
-const quickActions = [
-  { id: 'add-visitor', label: 'Tambah Pengunjung Baru', icon: UserPlus, action: 'add-visitor', section: 'Actions' },
-  { id: 'register-loan', label: 'Register Peminjaman', icon: FileText, action: 'register-loan', section: 'Actions' },
-  { id: 'toggle-dark', label: 'Toggle Dark Mode', icon: Moon, action: 'toggle-dark', section: 'Actions' },
+// System commands only - no creation actions
+const systemCommands = [
+  { id: 'toggle-dark', label: 'Toggle Dark Mode', icon: Moon, action: 'toggle-dark', section: 'System' },
+  { id: 'use-system', label: 'Use System Theme', icon: Monitor, action: 'use-system', section: 'System' },
 ];
 
-const allItems = [...navItems, ...quickActions];
+const allItems = [...navItems, ...systemCommands];
 
-// Backdrop animation
+// Animation variants
 const backdropVariants = {
   hidden: { opacity: 0 },
   visible: { opacity: 1 },
 };
 
-// Modal animation
 const modalVariants = {
   hidden: { opacity: 0, scale: 0.95, y: -20 },
   visible: { 
@@ -62,11 +103,31 @@ const modalVariants = {
   },
 };
 
-function CommandPalette() {
+function CommandPalette({ onNavigate }) {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [currentTheme, setCurrentTheme] = useState('light');
   const inputRef = useRef(null);
+
+  // Initialize theme on mount
+  useEffect(() => {
+    const theme = initializeTheme();
+    setCurrentTheme(theme);
+
+    // Listen for OS theme changes
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handler = (e) => {
+      const stored = getStoredTheme();
+      if (!stored) {
+        const newTheme = e.matches ? 'dark' : 'light';
+        applyTheme(newTheme);
+        setCurrentTheme(newTheme);
+      }
+    };
+    mediaQuery.addEventListener('change', handler);
+    return () => mediaQuery.removeEventListener('change', handler);
+  }, []);
 
   // Filter items based on search
   const filteredItems = allItems.filter(item => 
@@ -122,14 +183,35 @@ function CommandPalette() {
 
   // Handle item selection
   const handleSelect = (item) => {
-    if (item.path) {
-      // Use window.location for navigation (no react-router-dom needed)
-      window.location.hash = item.path;
-    } else if (item.action) {
-      console.log(`Action triggered: ${item.action}`);
-      alert(`Action: ${item.label}`);
+    if (item.path && onNavigate) {
+      onNavigate(item.path);
+    } else if (item.action === 'toggle-dark') {
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      setCurrentTheme(newTheme);
+      setStoredTheme(newTheme);
+      applyTheme(newTheme);
+    } else if (item.action === 'use-system') {
+      localStorage.removeItem(THEME_KEY);
+      const systemTheme = getSystemPreference();
+      setCurrentTheme(systemTheme);
+      applyTheme(systemTheme);
     }
     setIsOpen(false);
+  };
+
+  // Get appropriate icon for theme toggle
+  const getThemeIcon = (item) => {
+    if (item.id === 'toggle-dark') {
+      return currentTheme === 'dark' ? Sun : Moon;
+    }
+    return item.icon;
+  };
+
+  const getThemeLabel = (item) => {
+    if (item.id === 'toggle-dark') {
+      return currentTheme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode';
+    }
+    return item.label;
   };
 
   return (
@@ -137,11 +219,11 @@ function CommandPalette() {
       {/* Trigger Button */}
       <button
         onClick={() => setIsOpen(true)}
-        className="flex items-center gap-2 px-3 py-2 text-sm text-gray-500 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+        className="flex items-center gap-2 px-3 py-2 text-sm text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors"
       >
         <Search className="w-4 h-4" />
         <span className="hidden md:inline">Search...</span>
-        <kbd className="hidden md:inline-flex items-center gap-1 px-1.5 py-0.5 text-xs text-gray-400 bg-white rounded border border-gray-200">
+        <kbd className="hidden md:inline-flex items-center gap-1 px-1.5 py-0.5 text-xs text-gray-400 dark:text-gray-500 bg-white dark:bg-gray-700 rounded border border-gray-200 dark:border-gray-600">
           <span>Ctrl</span>
           <span>K</span>
         </kbd>
@@ -165,14 +247,14 @@ function CommandPalette() {
             
             {/* Modal Content */}
             <motion.div
-              className="relative w-full max-w-lg mx-4 bg-white rounded-2xl shadow-2xl overflow-hidden"
+              className="relative w-full max-w-lg mx-4 bg-white dark:bg-gray-900 rounded-2xl shadow-2xl overflow-hidden border border-gray-200 dark:border-gray-700"
               variants={modalVariants}
               initial="hidden"
               animate="visible"
               exit="exit"
             >
               {/* Search Input */}
-              <div className="flex items-center gap-3 px-4 py-3 border-b border-gray-100">
+              <div className="flex items-center gap-3 px-4 py-3 border-b border-gray-100 dark:border-gray-800">
                 <Search className="w-5 h-5 text-gray-400" />
                 <input
                   ref={inputRef}
@@ -180,12 +262,12 @@ function CommandPalette() {
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  placeholder="Cari halaman atau aksi..."
-                  className="flex-1 text-base outline-none placeholder:text-gray-400"
+                  placeholder="Search pages or commands..."
+                  className="flex-1 text-base outline-none placeholder:text-gray-400 bg-transparent text-gray-900 dark:text-gray-100"
                 />
                 <button 
                   onClick={() => setIsOpen(false)}
-                  className="p-1 hover:bg-gray-100 rounded"
+                  className="p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded"
                 >
                   <X className="w-4 h-4 text-gray-400" />
                 </button>
@@ -195,24 +277,28 @@ function CommandPalette() {
               <div className="max-h-80 overflow-y-auto py-2">
                 {Object.entries(groupedItems).map(([section, items]) => (
                   <div key={section}>
-                    <div className="px-4 py-1.5 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                    <div className="px-4 py-1.5 text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
                       {section}
                     </div>
                     {items.map((item) => {
                       const globalIndex = filteredItems.indexOf(item);
                       const isSelected = globalIndex === selectedIndex;
+                      const Icon = getThemeIcon(item);
+                      const label = getThemeLabel(item);
                       
                       return (
                         <button
                           key={item.id}
                           onClick={() => handleSelect(item)}
                           className={`w-full flex items-center gap-3 px-4 py-2.5 text-left transition-colors ${
-                            isSelected ? 'bg-gray-100' : 'hover:bg-gray-50'
+                            isSelected 
+                              ? 'bg-gray-100 dark:bg-gray-800' 
+                              : 'hover:bg-gray-50 dark:hover:bg-gray-800/50'
                           }`}
                         >
-                          <item.icon className={`w-5 h-5 ${isSelected ? 'text-gray-900' : 'text-gray-400'}`} />
-                          <span className={`flex-1 ${isSelected ? 'text-gray-900 font-medium' : 'text-gray-600'}`}>
-                            {item.label}
+                          <Icon className={`w-5 h-5 ${isSelected ? 'text-gray-900 dark:text-gray-100' : 'text-gray-400'}`} />
+                          <span className={`flex-1 ${isSelected ? 'text-gray-900 dark:text-gray-100 font-medium' : 'text-gray-600 dark:text-gray-300'}`}>
+                            {label}
                           </span>
                           {isSelected && <ArrowRight className="w-4 h-4 text-gray-400" />}
                         </button>
@@ -223,23 +309,23 @@ function CommandPalette() {
 
                 {filteredItems.length === 0 && (
                   <div className="px-4 py-8 text-center text-gray-400">
-                    <p>Tidak ada hasil untuk "{search}"</p>
+                    <p>No results for "{search}"</p>
                   </div>
                 )}
               </div>
 
               {/* Footer */}
-              <div className="flex items-center gap-4 px-4 py-2 bg-gray-50 border-t border-gray-100 text-xs text-gray-400">
+              <div className="flex items-center gap-4 px-4 py-2 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-100 dark:border-gray-800 text-xs text-gray-400">
                 <span className="flex items-center gap-1">
-                  <kbd className="px-1.5 py-0.5 bg-white rounded border">↑↓</kbd>
+                  <kbd className="px-1.5 py-0.5 bg-white dark:bg-gray-700 rounded border border-gray-200 dark:border-gray-600">↑↓</kbd>
                   <span>Navigate</span>
                 </span>
                 <span className="flex items-center gap-1">
-                  <kbd className="px-1.5 py-0.5 bg-white rounded border">Enter</kbd>
+                  <kbd className="px-1.5 py-0.5 bg-white dark:bg-gray-700 rounded border border-gray-200 dark:border-gray-600">Enter</kbd>
                   <span>Select</span>
                 </span>
                 <span className="flex items-center gap-1">
-                  <kbd className="px-1.5 py-0.5 bg-white rounded border">Esc</kbd>
+                  <kbd className="px-1.5 py-0.5 bg-white dark:bg-gray-700 rounded border border-gray-200 dark:border-gray-600">Esc</kbd>
                   <span>Close</span>
                 </span>
               </div>

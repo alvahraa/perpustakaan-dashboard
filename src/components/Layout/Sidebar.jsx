@@ -4,10 +4,8 @@ import {
   LayoutDashboard, 
   Users, 
   BookOpen, 
-  Sparkles,
   LogOut,
-  User,
-  Terminal
+  User
 } from 'lucide-react';
 import { cn } from '../../utils/cn';
 
@@ -24,12 +22,6 @@ const menuItems = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { id: 'visitors', label: 'Kunjungan', icon: Users },
   { id: 'loans', label: 'Peminjaman', icon: BookOpen },
-  { id: 'recommendations', label: 'Rekomendasi', icon: Sparkles },
-];
-
-// System tools (separate section)
-const systemItems = [
-  { id: 'console', label: 'System Console', icon: Terminal },
 ];
 
 // Smooth, luxurious spring transition config
@@ -69,12 +61,12 @@ function Sidebar({ activePage, onNavigate, user, onLogout }) {
       initial="hidden"
       animate="visible"
       variants={sidebarVariants}
-      className="fixed left-0 top-0 h-screen w-64 bg-black text-white flex flex-col z-50"
+      className="fixed left-0 top-0 h-screen w-64 bg-dark-950 text-dark-text-primary flex flex-col z-50"
     >
       {/* Logo & Title */}
       <motion.div 
         variants={itemVariants}
-        className="p-6 border-b border-gray-800"
+        className="p-6 border-b border-dark-border-accent"
       >
         <div className="flex items-center gap-3">
           <motion.div 
@@ -90,8 +82,8 @@ function Sidebar({ activePage, onNavigate, user, onLogout }) {
             />
           </motion.div>
           <div>
-            <h1 className="font-bold text-lg leading-tight">Prototype</h1>
-            <p className="text-xs text-gray-400">Dashboard Analytics</p>
+            <h1 className="font-bold text-lg leading-tight text-dark-text-primary">Prototype</h1>
+            <p className="text-xs text-dark-text-tertiary">Dashboard Analytics</p>
           </div>
         </div>
       </motion.div>
@@ -118,8 +110,8 @@ function Sidebar({ activePage, onNavigate, user, onLogout }) {
                     'relative w-full flex items-center gap-3 px-4 py-3 rounded-xl',
                     'transition-colors duration-200 text-left',
                     isActive 
-                      ? 'text-black font-medium' 
-                      : 'text-gray-300 hover:text-white'
+                      ? 'text-dark-950 font-medium' 
+                      : 'text-dark-text-secondary hover:text-dark-text-primary'
                   )}
                 >
                   {/* Active Background Pill with layoutId for smooth transitions */}
@@ -144,55 +136,13 @@ function Sidebar({ activePage, onNavigate, user, onLogout }) {
           })}
         </ul>
 
-        {/* System Tools - Separate Section */}
-        <div className="mt-4 pt-4 border-t border-gray-800">
-          <p className="px-4 text-xs text-gray-500 uppercase tracking-wider mb-2">System</p>
-          <ul className="space-y-1 px-3">
-            {systemItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = activePage === item.id;
-              
-              return (
-                <li key={item.id}>
-                  <motion.button
-                    onClick={() => onNavigate(item.id)}
-                    whileHover={{ x: 4 }}
-                    whileTap={{ scale: 0.98 }}
-                    transition={smoothSpring}
-                    className={cn(
-                      "relative w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors duration-200",
-                      isActive 
-                        ? 'text-black font-medium' 
-                        : 'text-gray-300 hover:text-white'
-                    )}
-                  >
-                    <AnimatePresence mode="wait">
-                      {isActive && (
-                        <motion.div
-                          layoutId="activeSystemBg"
-                          className="absolute inset-0 bg-emerald-500 rounded-xl"
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          exit={{ opacity: 0 }}
-                          transition={smoothSpring}
-                        />
-                      )}
-                    </AnimatePresence>
-                    
-                    <Icon className={`relative z-10 w-5 h-5 ${isActive ? 'text-white' : ''}`} />
-                    <span className={`relative z-10 ${isActive ? 'text-white' : ''}`}>{item.label}</span>
-                  </motion.button>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
+
       </nav>
 
       {/* User Info & Logout */}
       <motion.div 
         variants={itemVariants}
-        className="p-4 border-t border-gray-800"
+        className="p-4 border-t border-dark-border-accent"
       >
         {user && (
           <motion.div 
@@ -204,8 +154,8 @@ function Sidebar({ activePage, onNavigate, user, onLogout }) {
                 <User className="w-5 h-5 text-white" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium truncate">{user.name || user.username}</p>
-                <p className="text-xs text-gray-400 truncate">Administrator</p>
+                <p className="text-sm font-medium truncate text-dark-text-primary">{user.name || user.username}</p>
+                <p className="text-xs text-dark-text-tertiary truncate">Administrator</p>
               </div>
             </div>
           </motion.div>
@@ -216,14 +166,14 @@ function Sidebar({ activePage, onNavigate, user, onLogout }) {
             onClick={onLogout}
             whileHover={{ x: 4, backgroundColor: 'rgba(55, 65, 81, 0.5)' }}
             whileTap={{ scale: 0.98 }}
-            className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-gray-400 hover:text-white transition-colors duration-200"
+            className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-dark-text-tertiary hover:text-dark-text-primary transition-colors duration-200"
           >
             <LogOut className="w-5 h-5" />
             <span className="text-sm">Keluar</span>
           </motion.button>
         )}
         
-        <p className="text-xs text-gray-600 text-center mt-3">
+        <p className="text-xs text-dark-text-muted text-center mt-3">
           © 2024 Prototype Dashboard
         </p>
       </motion.div>
