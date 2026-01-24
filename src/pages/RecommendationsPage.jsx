@@ -1,14 +1,14 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Flame, User, GitBranch, Sparkles } from 'lucide-react';
-import { TrendingBooks, CollaborativeRecs, ContentBasedRecs } from '../components/Recommendations';
-import { 
-  LoadingPage, 
-  ErrorMessage, 
-  RefreshButton, 
+import { CollaborativeRecs, ContentBasedRecs } from '../components/Recommendations';
+import {
+  LoadingPage,
+  ErrorMessage,
+  RefreshButton,
   LastUpdated,
   Tabs,
-  ViewToggle 
+  ViewToggle
 } from '../components/Common';
 import { useVisitors, useLoans, useBooks } from '../hooks';
 import * as analytics from '../utils/analytics';
@@ -16,7 +16,7 @@ import * as analytics from '../utils/analytics';
 // TrendingSection with View Toggle
 function TrendingSection({ trendingBooks }) {
   const [viewMode, setViewMode] = useState('grid');
-  
+
   return (
     <div className="space-y-6">
       <div className="card bg-gradient-to-br from-gray-900 to-gray-800 text-white">
@@ -31,12 +31,12 @@ function TrendingSection({ trendingBooks }) {
         <p className="text-gray-300 mb-6">
           Buku-buku yang paling banyak dipinjam dalam 7 hari terakhir.
         </p>
-        
+
         {/* Grid View */}
         {viewMode === 'grid' && (
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             {trendingBooks.slice(0, 10).map((book, index) => (
-              <motion.div 
+              <motion.div
                 key={book.id}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -50,7 +50,7 @@ function TrendingSection({ trendingBooks }) {
                       {index + 1}
                     </span>
                   )}
-                  <div 
+                  <div
                     className="w-full aspect-[3/4] rounded-lg flex items-center justify-center text-2xl font-bold"
                     style={{ backgroundColor: `hsl(${index * 25}, 20%, ${25 + index * 5}%)` }}
                   >
@@ -63,7 +63,7 @@ function TrendingSection({ trendingBooks }) {
             ))}
           </div>
         )}
-        
+
         {/* Table View (Admin) */}
         {viewMode === 'table' && (
           <div className="overflow-x-auto">
@@ -118,30 +118,7 @@ const tabs = [
   { id: 'discover', label: 'Discover', icon: GitBranch },
 ];
 
-// Tab content animation with stagger
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.08,
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 12 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      type: "spring",
-      stiffness: 150,
-      damping: 20,
-    },
-  },
-};
-
+// Tab content animation
 const tabContentVariants = {
   enter: { opacity: 0, y: 10 },
   center: { opacity: 1, y: 0 },
@@ -176,7 +153,7 @@ function RecommendationsPage() {
   }, [loans, books]);
 
   const sampleBook = useMemo(() => books?.[0], [books]);
-  
+
   const collaborativeRecs = useMemo(() => {
     if (!loans || !books) return [];
     const bookId = selectedBookId || sampleBook?.id;
@@ -205,8 +182,8 @@ function RecommendationsPage() {
 
   if (error && !books) {
     return (
-      <ErrorMessage 
-        message={error} 
+      <ErrorMessage
+        message={error}
         onRetry={handleRefresh}
         variant="page"
       />
@@ -238,7 +215,7 @@ function RecommendationsPage() {
       )}
 
       {/* Tab Navigation */}
-      <Tabs 
+      <Tabs
         tabs={tabs}
         activeTab={activeTab}
         onTabChange={setActiveTab}
@@ -269,11 +246,11 @@ function RecommendationsPage() {
                   <h3 className="text-xl font-bold">Rekomendasi Untuk Anda</h3>
                 </div>
                 <p className="text-gray-500 mb-2">
-                  Berdasarkan kategori buku yang sering Anda pinjam. 
+                  Berdasarkan kategori buku yang sering Anda pinjam.
                   Algoritma: <span className="font-medium text-gray-900">Content-Based Filtering</span>
                 </p>
               </div>
-              
+
               {/* Content-Based Component */}
               <ContentBasedRecs
                 recommendations={contentBasedRecs}
@@ -294,11 +271,11 @@ function RecommendationsPage() {
                   <h3 className="text-xl font-bold">Temukan Pola Peminjaman</h3>
                 </div>
                 <p className="text-gray-500 mb-2">
-                  "Pengguna yang meminjam buku ini juga meminjam..." 
+                  "Pengguna yang meminjam buku ini juga meminjam..."
                   Algoritma: <span className="font-medium text-gray-900">Collaborative Filtering</span>
                 </p>
               </div>
-              
+
               {/* Collaborative Component */}
               <CollaborativeRecs
                 recommendations={collaborativeRecs}
@@ -312,7 +289,7 @@ function RecommendationsPage() {
       </AnimatePresence>
 
       {/* Algorithm Info Footer */}
-      <motion.div 
+      <motion.div
         className="card bg-gray-50"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

@@ -19,10 +19,6 @@ import {
  * - Monospace font for technical feel
  */
 
-// Toast notification state
-let toastQueue = [];
-let setToasts = null;
-
 // Generate insight ID
 function generateInsightId() {
   return `INS-${Date.now().toString(36).toUpperCase()}`;

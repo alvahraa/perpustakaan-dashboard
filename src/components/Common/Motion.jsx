@@ -29,8 +29,8 @@ const hoverSpring = {
 
 // Card animation variants
 const cardVariants = {
-  hidden: { 
-    opacity: 0, 
+  hidden: {
+    opacity: 0,
     y: 15,
     scale: 0.98
   },
@@ -42,12 +42,12 @@ const cardVariants = {
   },
 };
 
-export function MotionCard({ 
-  children, 
-  className, 
+export function MotionCard({
+  children,
+  className,
   hover = true,
   glass = false,
-  ...props 
+  ...props
 }) {
   return (
     <motion.div
@@ -100,21 +100,21 @@ export function MotionContainer({ children, className, ...props }) {
 /**
  * Animated Button with Tactile Feedback
  */
-export function MotionButton({ 
-  children, 
-  className, 
+export function MotionButton({
+  children,
+  className,
   variant = 'primary',
   size = 'md',
-  ...props 
+  ...props
 }) {
   const baseClasses = 'inline-flex items-center justify-center gap-2 font-medium rounded-xl transition-colors';
-  
+
   const variants = {
     primary: 'bg-black text-white hover:bg-gray-800',
     secondary: 'bg-gray-100 text-gray-900 hover:bg-gray-200',
     ghost: 'text-gray-600 hover:text-gray-900 hover:bg-gray-100',
   };
-  
+
   const sizes = {
     sm: 'px-3 py-1.5 text-sm',
     md: 'px-4 py-2 text-sm',
@@ -172,10 +172,5 @@ export function MotionGrid({ children, className, columns = 2, ...props }) {
   );
 }
 
-export default {
-  MotionCard,
-  MotionContainer,
-  MotionButton,
-  MotionPage,
-  MotionGrid,
-};
+// Note: Named exports (MotionCard, MotionContainer, MotionButton, MotionPage, MotionGrid)
+// are already available above. Use them directly instead of default import.
