@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import {
   LineChart,
@@ -12,12 +12,9 @@ import {
 } from 'recharts';
 
 /**
- * TrendChart Component - Smooth Line Animation
+ * TrendChart Component
  * 
- * Features:
- * - Clean drawing animation using Recharts built-in
- * - Smooth dot appearance
- * - Professional look
+ * Line chart dengan animasi smooth saat pertama kali load
  */
 
 // Container animation
@@ -49,14 +46,8 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 function TrendChart({ data, loading = false, title = "Trend Kunjungan 7 Hari Terakhir" }) {
-  const [animationKey, setAnimationKey] = useState(0);
   const chartData = data?.slice(-7) || [];
   const avgVisits = chartData.reduce((sum, d) => sum + d.visits, 0) / (chartData.length || 1);
-
-  // Replay animation when data changes
-  useEffect(() => {
-    setAnimationKey(prev => prev + 1);
-  }, [data]);
 
   if (loading) {
     return (
@@ -74,27 +65,11 @@ function TrendChart({ data, loading = false, title = "Trend Kunjungan 7 Hari Ter
       animate="visible"
       className="card hover:shadow-lg transition-shadow duration-300"
     >
-      <div className="flex items-center justify-between mb-2">
-        <h3 className="card-header mb-0">{title}</h3>
-        {/* Replay button */}
-        <motion.button
-          onClick={() => setAnimationKey(prev => prev + 1)}
-          className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors"
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.95 }}
-          title="Replay animation"
-        >
-          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M1 4v6h6M23 20v-6h-6" strokeLinecap="round" strokeLinejoin="round" />
-            <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </motion.button>
-      </div>
+      <h3 className="card-header">{title}</h3>
 
       <div className="h-64">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
-            key={animationKey}
             data={chartData}
             margin={{ top: 20, right: 10, left: 0, bottom: 0 }}
           >
@@ -130,15 +105,12 @@ function TrendChart({ data, loading = false, title = "Trend Kunjungan 7 Hari Ter
               type="monotone"
               dataKey="visits"
               stroke="#000000"
-              strokeWidth={2.5}
+              strokeWidth={2}
               dot={{ fill: '#000', strokeWidth: 0, r: 4 }}
               activeDot={{ fill: '#000', stroke: '#fff', strokeWidth: 2, r: 6 }}
               isAnimationActive={true}
-              animationDuration={1500}
+              animationDuration={1000}
               animationEasing="ease-out"
-              animationBegin={0}
-              strokeLinecap="round"
-              strokeLinejoin="round"
             />
           </LineChart>
         </ResponsiveContainer>
